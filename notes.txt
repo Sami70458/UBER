@@ -1,0 +1,7 @@
+packages
+
+bcrypt :- for hashing password (npm i bcrypt)
+
+jsonwebtoken :- for token generation (npm i jsonwebtoken )
+
+npm install express-validator (to validate whether user info are correct or not)
