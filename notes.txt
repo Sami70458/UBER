@@ -5,3 +5,7 @@ bcrypt :- for hashing password (npm i bcrypt)
 jsonwebtoken :- for token generation (npm i jsonwebtoken )
 
 npm install express-validator (to validate whether user info are correct or not)
+
+
+
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Q2ZWI0NzdlODYyNDE4NDIwMDk2YmQiLCJpYXQiOjE3NDIxMzgxODMsImV4cCI6MTc0MjIyNDU4M30.YNL7shOItwcX3kExgfk8Kto46u8flgmXdsUmsOfVDmc","captain":{"fullname":{"firstname":"test_captain_firstname","lastname":"test_captain_lastname"},"email":"test_email@gmail.com","password":"$2b$10$2EcucU0mzs4ciJMiivenveVt9GLNYahTlhWPERUDR3ihETVKPAqHm","status":"inactive","vehicle":{"color":"red","plate":"MP 04 XY 6204","capacity":3,"vehicleType":"car"},"_id":"67d6eb477e862418420096bd","__v":0}}
