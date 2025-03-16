@@ -155,3 +155,78 @@ Example:
 #### Notes
 - Ensure that the `Content-Type` header is set to `application/json`
 - The password is compared with the hashed version stored in the database
+
+
+### GET /users/profile
+
+#### Description
+This endpoint retrieves the profile information of the authenticated user.
+
+#### Authentication
+Requires a valid JWT token in the Authorization header:
+```
+Authorization: Bearer <token>
+```
+
+#### Responses
+
+- **200 OK**
+  - **Description**: Successfully retrieved user profile.
+  - **Body**: JSON object containing user details.
+  - **Example**:
+    ```json
+    {
+      "_id": "user_id",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "john.doe@example.com"
+    }
+    ```
+
+- **401 Unauthorized**
+  - **Description**: No token provided or invalid token.
+  - **Body**: JSON object with error message.
+  - **Example**:
+    ```json
+    {
+      "message": "Authentication required"
+    }
+    ```
+
+### GET /users/logout
+
+#### Description
+This endpoint logs out the current user and invalidates their token.
+
+#### Authentication
+Requires a valid JWT token either in:
+- Authorization header: `Authorization: Bearer <token>`
+- Cookie: `token=<token>`
+
+#### Responses
+
+- **200 OK**
+  - **Description**: Successfully logged out.
+  - **Body**: JSON object with success message.
+  - **Example**:
+    ```json
+    {
+      "message": "Logged out successfully"
+    }
+    ```
+
+- **401 Unauthorized**
+  - **Description**: No token provided or invalid token.
+  - **Body**: JSON object with error message.
+  - **Example**:
+    ```json
+    {
+      "message": "Authentication required"
+    }
+    ```
+
+#### Notes
+- The token is added to a blacklist to prevent reuse
+- The auth cookie is cleared upon logout
