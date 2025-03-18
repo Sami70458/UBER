@@ -230,3 +230,103 @@ Requires a valid JWT token either in:
 #### Notes
 - The token is added to a blacklist to prevent reuse
 - The auth cookie is cleared upon logout
+
+## Captain Endpoints
+
+### POST /captains/register
+
+#### Description
+This endpoint is used to register a new captain (driver).
+
+#### Request Body
+The request body should be a JSON object with the following fields:
+- `fullname`: An object containing:
+  - `firstname` (string, required, minimum length: 3)
+  - `lastname` (string, optional, minimum length: 3)
+- `email` (string, required, must be a valid email)
+- `password` (string, required, minimum length: 6)
+- `vehicle`: An object containing:
+  - `color` (string, required, minimum length: 3)
+  - `plate` (string, required, minimum length: 3)
+  - `capacity` (number, required)
+  - `vehicleType` (string, required, enum: ['car', 'motorcycle', 'auto'])
+
+Example:
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.driver@example.com",
+  "password": "password123",
+  "vehicle": {
+    "color": "black",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+#### Responses
+
+- **201 Created**
+  - **Description**: Captain successfully registered.
+  - **Body**: JSON object containing the authentication token and captain details.
+  - **Example**:
+    ```json
+    {
+      "token": "your_jwt_token",
+      "captain": {
+        "_id": "captain_id",
+        "fullname": {
+          "firstname": "John",
+          "lastname": "Doe"
+        },
+        "email": "john.driver@example.com",
+        "vehicle": {
+          "color": "black",
+          "plate": "ABC123",
+          "capacity": 4,
+          "vehicleType": "car"
+        }
+      }
+    }
+    ```
+
+- **400 Bad Request**
+  - **Description**: Validation error or missing required fields.
+  - **Body**: JSON object containing validation errors.
+  - **Example**:
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Invalid Email",
+          "param": "email",
+          "location": "body"
+        },
+        {
+          "msg": "First name must be at least 3 characters long",
+          "param": "fullname.firstname",
+          "location": "body"
+        },
+        {
+          "msg": "Color must be at least 3 characters long",
+          "param": "vehicle.color",
+          "location": "body"
+        },
+        {
+          "msg": "Invalid vehicle type",
+          "param": "vehicle.vehicleType",
+          "location": "body"
+        }
+      ]
+    }
+    ```
+
+#### Notes
+- Ensure that the `Content-Type` header is set to `application/json`
+- The `password` field will be hashed before storing in the database
+- Valid vehicle types: 'car', 'motorcycle', 'auto'
