@@ -330,3 +330,180 @@ Example:
 - Ensure that the `Content-Type` header is set to `application/json`
 - The `password` field will be hashed before storing in the database
 - Valid vehicle types: 'car', 'motorcycle', 'auto'
+
+
+
+### POST /captains/register
+
+#### Description
+This endpoint is used to register a new captain (driver).
+
+#### Request Body
+```json
+{
+  "fullname": {
+    "firstname": "John",       // required, min length: 3
+    "lastname": "Doe"         // optional, min length: 3 if provided
+  },
+  "email": "john.driver@example.com",  // required, must be valid email format
+  "password": "password123",           // required, min length: 6
+  "vehicle": {
+    "color": "black",         // required, min length: 3
+    "plate": "ABC123",        // required, min length: 3
+    "capacity": 4,            // required, must be a number
+    "vehicleType": "car"      // required, must be one of: 'car', 'motorcycle', 'auto'
+  }
+}
+```
+
+#### Responses
+
+- **201 Created**
+```json
+{
+  "token": "your_jwt_token",          // JWT token for authentication
+  "captain": {
+    "_id": "captain_id",              // MongoDB generated ID
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "vehicle": {
+      "color": "black",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+    // password is never returned in response
+  }
+}
+```
+
+- **400 Bad Request**
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",                   // validation error message
+      "param": "email",                        // field that failed validation
+      "location": "body"                       // location of the error
+    },
+    {
+      "msg": "First name must be at least 3 characters long",
+      "param": "fullname.firstname",
+      "location": "body"
+    }
+    // ... other possible validation errors
+  ]
+}
+```
+
+- **400 Bad Request** (If email already exists)
+```json
+{
+  "message": "Captain already exists"
+}
+```
+
+### POST /captains/login
+
+#### Description
+This endpoint authenticates an existing captain and returns a JWT token.
+
+#### Request Body
+```json
+{
+  "email": "john.driver@example.com",  // required, must be valid email
+  "password": "password123"            // required, min length: 6
+}
+```
+
+#### Responses
+
+- **200 OK**
+```json
+{
+  "token": "your_jwt_token",          // JWT token for authentication
+  "captain": {
+    "_id": "captain_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "vehicle": {
+      "color": "black",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+- **401 Unauthorized**
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+### GET /captains/profile
+
+#### Description
+Retrieves the profile information of the authenticated captain.
+
+#### Authentication
+Requires a valid JWT token in the Authorization header:
+```
+Authorization: Bearer <token>
+```
+
+#### Responses
+
+- **200 OK**
+```json
+{
+  "captain": {
+    "_id": "captain_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "vehicle": {
+      "color": "black",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+### GET /captains/logout
+
+#### Description
+Logs out the current captain and invalidates their token.
+
+#### Authentication
+Requires a valid JWT token either in:
+- Authorization header: `Authorization: Bearer <token>`
+- Cookie: `token=<token>`
+
+#### Responses
+
+- **200 OK**
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+#### Notes
+- All endpoints require `Content-Type: application/json` header
+- Passwords are hashed before storing in the database
+- Valid vehicle types are: 'car', 'motorcycle', 'auto'
+- The token is added to a blacklist upon logout to prevent reuse
+- The auth cookie is cleared upon logout
