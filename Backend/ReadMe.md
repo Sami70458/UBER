@@ -507,3 +507,45 @@ Requires a valid JWT token either in:
 - Valid vehicle types are: 'car', 'motorcycle', 'auto'
 - The token is added to a blacklist upon logout to prevent reuse
 - The auth cookie is cleared upon logout
+
+
+### GET /rides/get-fare
+
+#### Description
+This endpoint calculates the ride fare based on the provided pickup and destination addresses. It communicates with the Google Maps Distance Matrix API to fetch distance and duration data and then computes the fare according to predefined rates for different vehicle types.
+
+#### Request Query Parameters
+- `pickup` (string, required, minimum length: 3): The pickup location address.
+- `destination` (string, required, minimum length: 3): The destination address.
+
+Example:
+```json
+{
+  "pickup": "123 Main St, City",
+  "destination": "456 Elm St, City"
+}
+
+{
+  "auto": 75.50,
+  "car": 115.75,
+  "motorcycle": 55.25
+}
+
+{
+  "errors": [
+    {
+      "msg": "Invalid pickup address",
+      "param": "pickup",
+      "location": "query"
+    },
+    {
+      "msg": "Invalid destination address",
+      "param": "destination",
+      "location": "query"
+    }
+  ]
+}
+
+{
+  "message": "Internal server error"
+}
